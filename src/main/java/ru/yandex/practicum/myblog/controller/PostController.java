@@ -129,7 +129,7 @@ public class PostController {
     }
 
     // з) POST "/posts/{id}/edit" - форма редактирования поста
-    @PostMapping("/posts/{id}/edit")
+    @GetMapping("/posts/{id}/edit")
     public String editPostForm(@PathVariable("id") Long id, Model model) {
         Optional<Post> postOpt = postService.getPostById(id);
         if (postOpt.isEmpty()) {
@@ -167,40 +167,6 @@ public class PostController {
         return "redirect:/posts/" + id;
     }
 
-    // к) POST "/posts/{id}/comments" - добавление комментария
-    @PostMapping("/posts/{id}/comments")
-    public String addComment(
-            @PathVariable("id") Long id,
-            @RequestParam("text") String text) {
-
-        // нужна реализация добавления комментария, её нет в PostService
-
-
-        return "redirect:/posts/" + id;
-    }
-
-    // л) POST "/posts/{id}/comments/{commentId}" - редактирование комментария
-    @PostMapping("/posts/{id}/comments/{commentId}")
-    public String editComment(
-            @PathVariable("id") Long id,
-            @PathVariable("commentId") Long commentId,
-            @RequestParam("text") String text) {
-
-        //нужно реализовать в сервисе postService.editComment(commentId, text);
-
-        return "redirect:/posts/" + id;
-    }
-
-    // м) POST "/posts/{id}/comments/{commentId}/delete" - удаление комментария
-    @PostMapping("/posts/{id}/comments/{commentId}/delete")
-    public String deleteComment(
-            @PathVariable("id") Long id,
-            @PathVariable("commentId") Long commentId) {
-
-        // нужно реализовать в сервисе postService.deleteComment(commentId);
-
-        return "redirect:/posts/" + id;
-    }
 
     // н) POST "/posts/{id}/delete" - удаление поста
     @PostMapping("/posts/{id}/delete")
