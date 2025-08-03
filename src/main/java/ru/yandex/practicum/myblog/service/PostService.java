@@ -53,13 +53,14 @@ public class PostService {
     }
 
     @Transactional
-    public void createPost(Post post, List<String> tagNames) {
+    public Long createPost(Post post, List<String> tagNames) {
         post.setLikesCount(0);
-        postRepository.save(post);
 
         Long id = postRepository.save(post);
         post.setId(id);
         tagRepository.bindPostTags(id, tagNames);
+
+        return id;
     }
 
     @Transactional
