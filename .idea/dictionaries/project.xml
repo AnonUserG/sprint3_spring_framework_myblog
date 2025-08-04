@@ -2,6 +2,7 @@
   <dictionary name="project">
     <words>
       <w>myblog</w>
+      <w>myblogdb</w>
       <w>usersdb</w>
     </words>
   </dictionary>

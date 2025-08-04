@@ -6,14 +6,12 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import ru.yandex.practicum.myblog.configuration.DatabaseConfig;
-import ru.yandex.practicum.myblog.configuration.ResourceConfig;
+import ru.yandex.practicum.myblog.configuration.MultipartConfig;
 import ru.yandex.practicum.myblog.configuration.ThymeleafConfig;
 
 @Configuration
 @EnableWebMvc
 @ComponentScan(basePackages = {"ru.yandex.practicum.myblog"})
 @PropertySource("classpath:application.properties")
-@Import({DatabaseConfig.class, ThymeleafConfig.class, ResourceConfig.class})
-public class WebConfiguration {
-
-}
+@Import({DatabaseConfig.class, ThymeleafConfig.class, MultipartConfig.class})
+public class WebConfiguration {}

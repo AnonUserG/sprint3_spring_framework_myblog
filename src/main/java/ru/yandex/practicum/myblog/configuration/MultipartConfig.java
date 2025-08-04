@@ -12,4 +12,5 @@ public class MultipartConfig {
     public MultipartResolver multipartResolver() {
         return new StandardServletMultipartResolver();
     }
+
 }

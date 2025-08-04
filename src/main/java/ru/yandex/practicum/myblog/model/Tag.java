@@ -9,8 +9,10 @@ import org.springframework.data.annotation.Id;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Tag {
+
     @Id
     private Long id;
 
     private String name;
+
 }

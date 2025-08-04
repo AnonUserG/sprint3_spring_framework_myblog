@@ -1,7 +1,6 @@
 package ru.yandex.practicum.myblog.service;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.myblog.model.Comment;
 import ru.yandex.practicum.myblog.repository.CommentRepository;
 

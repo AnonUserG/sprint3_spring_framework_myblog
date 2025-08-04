@@ -11,9 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.myblog.model.Post;
-import ru.yandex.practicum.myblog.service.PostService;
-
-import jakarta.servlet.http.HttpServletResponse;
+import ru.yandex.practicum.myblog.service.PostServiceImpl;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,12 +28,12 @@ import java.util.stream.Collectors;
 @Controller
 public class PostController {
 
-    private final PostService postService;
+    private final PostServiceImpl postService;
 
     // Для работы с изображениями нужно предусмотреть хранение и отдачу байтов,
     // но пока предполагаем, что post.getImagePath() содержит нужные данные.
 
-    public PostController(PostService postService) {
+    public PostController(PostServiceImpl postService) {
         this.postService = postService;
     }
 
@@ -130,7 +128,6 @@ public class PostController {
 
         if (image != null && !image.isEmpty()) {
             post.setImagePath(saveImage(image));
-            post.setImagePath(image.getOriginalFilename());
         }
 
         List<String> tagList = parseTags(tags);

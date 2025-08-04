@@ -19,13 +19,9 @@ public class Post {
     private Long id;
 
     private String title;
-
     private String text;
-
     private String imagePath;
-
     private int likesCount;
-
 
     @Transient
     private List<String> tags = new ArrayList<>();
