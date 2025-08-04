@@ -1,4 +1,4 @@
-package config;
+package controller.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,7 +10,7 @@ import ru.yandex.practicum.myblog.service.PostService;
 import static org.mockito.Mockito.mock;
 
 @Configuration
-public class TestConfig {
+public class TestConfigController {
 
     @Bean
     public CommentService commentService() {

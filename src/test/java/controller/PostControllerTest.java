@@ -1,7 +1,6 @@
 package controller;
 
-import config.TestConfig;
-import org.junit.jupiter.api.BeforeAll;
+import controller.config.TestConfigController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,8 +17,8 @@ import ru.yandex.practicum.myblog.model.Post;
 import ru.yandex.practicum.myblog.service.PostService;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -34,7 +33,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = TestConfig.class)
+@ContextConfiguration(classes = TestConfigController.class)
 public class PostControllerTest {
 
     private MockMvc mockMvc;
@@ -122,7 +121,7 @@ public class PostControllerTest {
         File tempFile = File.createTempFile("testImage", ".jpg");
         Files.write(tempFile.toPath(), "image content".getBytes());
 
-        java.lang.reflect.Field field = PostController.class.getDeclaredField("uploadPath");
+        Field field = PostController.class.getDeclaredField("uploadPath");
         field.setAccessible(true);
         field.set(postController, tempFile.getParent());
 

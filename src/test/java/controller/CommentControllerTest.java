@@ -1,6 +1,6 @@
 package controller;
 
-import config.TestConfig;
+import controller.config.TestConfigController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = TestConfig.class)
+@ContextConfiguration(classes = TestConfigController.class)
 public class CommentControllerTest {
 
     private MockMvc mockMvc;
@@ -36,7 +36,7 @@ public class CommentControllerTest {
     }
 
     @Test
-    @DisplayName("Добавление комментария")
+    @DisplayName("POST /posts/{postId}/comments - добавление комментария")
     void addComment_shouldRedirectAndCallService() throws Exception {
         Long postId = 1L;
 
@@ -49,7 +49,7 @@ public class CommentControllerTest {
     }
 
     @Test
-    @DisplayName("Редактирование комментария")
+    @DisplayName("POST /posts/{postId}/comments/{commentId} — редактирование комментария")
     void editComment_shouldRedirectAndCallService() throws Exception {
         Long postId = 1L;
         Long commentId = 7L;
@@ -63,7 +63,7 @@ public class CommentControllerTest {
     }
 
     @Test
-    @DisplayName("Удаление комментария")
+    @DisplayName("/posts/{postId}/comments/{commentId}/delete — удаление комментария")
     void deleteComment_shouldRedirectAndCallService() throws Exception {
         Long postId = 1L;
         Long commentId = 7L;
