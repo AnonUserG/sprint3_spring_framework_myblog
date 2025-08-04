@@ -38,7 +38,7 @@ public class TagRepository {
         String sql = "INSERT INTO tags (name) VALUES (:name)";
         jdbcTemplate.update(sql, Map.of("name", name));
 
-        return findByName(name).map(Tag::getId).orElseThrow(); // повторный запрос
+        return findByName(name).map(Tag::getId).orElseThrow();
     }
 
     public void bindPostTags(Long postId, List<String> tagNames) {
