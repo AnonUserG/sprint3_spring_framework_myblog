@@ -1,6 +1,7 @@
 package ru.yandex.practicum.myblog.controller;
 
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -28,22 +29,22 @@ import java.util.stream.Collectors;
 @Controller
 public class PostController {
 
-    private final PostServiceImpl postService;
+    @Value("${upload.path}")
+    private String uploadPath;
 
-    // Для работы с изображениями нужно предусмотреть хранение и отдачу байтов,
-    // но пока предполагаем, что post.getImagePath() содержит нужные данные.
+    private final PostServiceImpl postService;
 
     public PostController(PostServiceImpl postService) {
         this.postService = postService;
     }
 
-    // а) GET "/" - редирект на "/posts"
+    // GET "/" - редирект на "/posts"
     @GetMapping("/")
     public String root() {
         return "redirect:/posts";
     }
 
-    // б) GET "posts" - список постов
+    // GET "posts" - список постов
     @GetMapping("/posts")
     public String listPosts(
             @RequestParam(defaultValue = "") String search,
@@ -63,7 +64,7 @@ public class PostController {
         return "posts";
     }
 
-    // в) GET "/posts/{id}" - страница с постом
+    // GET "/posts/{id}" - страница с постом
     @GetMapping("/posts/{id}")
     public String getPost(@PathVariable("id") Long id, Model model) {
         Optional<Post> postOpt = postService.getPostById(id);
@@ -74,14 +75,37 @@ public class PostController {
         return "post";
     }
 
-    // г) GET "/posts/add" - форма добавления поста
+    // GET "/posts/add" - форма добавления поста
     @GetMapping("/posts/add")
     public String addPostForm(Model model) {
         model.addAttribute("post", null);
         return "add-post";
     }
 
-    // д) POST "/posts" - добавление поста
+    // GET "/images/{id}" - отдача байтов картинки
+    @GetMapping("/images/{id}")
+    public ResponseEntity<byte[]> getImage(@PathVariable("id") Long id) throws IOException {
+        Optional<Post> postOpt = postService.getPostById(id);
+        if (postOpt.isEmpty() || postOpt.get().getImagePath() == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        String imagePath = Paths.get(uploadPath, postOpt.get().getImagePath()).toString();
+        File imgFile = new File(imagePath);
+
+        if (!imgFile.exists()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        byte[] imageBytes = Files.readAllBytes(imgFile.toPath());
+        String contentType = Files.probeContentType(imgFile.toPath());
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_TYPE, contentType != null ? contentType : "image/jpeg")
+                .body(imageBytes);
+    }
+
+    // POST "/posts" - добавление поста
     @PostMapping("/posts")
     public String createPost(
             @RequestParam("title") String title,
@@ -95,7 +119,7 @@ public class PostController {
         post.setLikesCount(0);
         List<String> tagList = parseTags(tags);
 
-        // 🔽 Сохраняем изображение в папку uploads
+
         if (image != null && !image.isEmpty()) {
             post.setImagePath(saveImage(image));
         }
@@ -109,7 +133,7 @@ public class PostController {
         return "redirect:/posts/" + id;
     }
 
-    // и) POST "/posts/{id}" - редактирование поста
+    // POST "/posts/{id}" - редактирование поста
     @PostMapping("/posts/{id}")
     public String editPost(
             @PathVariable("id") Long id,
@@ -136,36 +160,15 @@ public class PostController {
         return "redirect:/posts/" + id;
     }
 
-    // е) GET "/images/{id}" - отдача байтов картинки
-    @GetMapping("/images/{id}")
-    public ResponseEntity<byte[]> getImage(@PathVariable("id") Long id) throws IOException {
-        Optional<Post> postOpt = postService.getPostById(id);
-        if (postOpt.isEmpty() || postOpt.get().getImagePath() == null) {
-            return ResponseEntity.notFound().build();
-        }
 
-        String imagePath = "C:\\Users\\Admin\\IdeaProjects\\myblog\\uploads\\" + postOpt.get().getImagePath();
-        File imgFile = new File(imagePath);
-        if (!imgFile.exists()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        byte[] imageBytes = Files.readAllBytes(imgFile.toPath());
-        String contentType = Files.probeContentType(imgFile.toPath());
-
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_TYPE, contentType != null ? contentType : "image/jpeg")
-                .body(imageBytes);
-    }
-
-    // ж) POST "/posts/{id}/like" - лайк/дизлайк
+    // POST "/posts/{id}/like" - лайк/дизлайк
     @PostMapping("/posts/{id}/like")
     public String likePost(@PathVariable("id") Long id, @RequestParam boolean like) {
         postService.likePost(id, like);
         return "redirect:/posts/" + id;
     }
 
-    // з) POST "/posts/{id}/edit" - форма редактирования поста
+    // POST "/posts/{id}/edit" - форма редактирования поста
     @GetMapping("/posts/{id}/edit")
     public String editPostForm(@PathVariable("id") Long id, Model model) {
         Optional<Post> postOpt = postService.getPostById(id);
@@ -176,36 +179,31 @@ public class PostController {
         return "add-post";
     }
 
-
-
-    private String saveImage(MultipartFile image) throws IOException {
-        if (image == null || image.isEmpty()) {
-            return null;
-        }
-        // Создаем директорию uploads, если она не существует
-        String uploadDir = "C:\\Users\\Admin\\IdeaProjects\\myblog\\uploads\\";
-        File uploadPath = new File(uploadDir);
-
-        if (!uploadPath.exists()) {
-            uploadPath.mkdirs();
-        }
-
-        String fileName = UUID.randomUUID() + "_" + image.getOriginalFilename();
-        Path filePath = Paths.get(uploadDir, fileName);
-        Files.copy(image.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-
-        return fileName;
-    }
-
-
-    // н) POST "/posts/{id}/delete" - удаление поста
+    // POST "/posts/{id}/delete" - удаление поста
     @PostMapping("/posts/{id}/delete")
     public String deletePost(@PathVariable("id") Long id) {
         postService.deletePost(id);
         return "redirect:/posts";
     }
 
-    // Вспомогательный метод для парсинга тегов из строки
+    private String saveImage(MultipartFile image) throws IOException {
+        if (image == null || image.isEmpty()) {
+            return null;
+        }
+
+        File uploadDir = new File(uploadPath);
+
+        if (!uploadDir.exists()) {
+            uploadDir.mkdirs();
+        }
+
+        String fileName = UUID.randomUUID() + "_" + image.getOriginalFilename();
+        Path filePath = Paths.get(uploadDir.getPath(), fileName);
+        Files.copy(image.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+        return fileName;
+    }
+
     private List<String> parseTags(String tags) {
         if (tags == null || tags.isBlank()) {
             return List.of();
@@ -216,13 +214,7 @@ public class PostController {
                 .collect(Collectors.toList());
     }
 
-    // Заглушка загрузки картинки по пути
-    private byte[] loadImageBytes(String imagePath) throws IOException {
-        Path path = Paths.get("uploads", imagePath); // или путь из application.properties
-        return Files.readAllBytes(path);
-    }
 
-    // Класс для передачи информации о пагинации в модель
     public static class Paging {
         private final int pageNumber;
         private final int pageSize;

@@ -1,6 +1,5 @@
 package ru.yandex.practicum.myblog.repository;
 
-import org.springframework.jdbc.core.JdbcTemplate;
 import ru.yandex.practicum.myblog.model.Comment;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
