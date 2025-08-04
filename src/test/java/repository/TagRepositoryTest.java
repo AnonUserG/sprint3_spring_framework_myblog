@@ -12,7 +12,6 @@ import repository.config.TestConfigRepository;
 import ru.yandex.practicum.myblog.model.Tag;
 import ru.yandex.practicum.myblog.repository.TagRepository;
 
-import javax.sql.DataSource;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,8 +28,6 @@ public class TagRepositoryTest {
     @Autowired
     private NamedParameterJdbcTemplate jdbcTemplate;
 
-    @Autowired
-    private DataSource dataSource;
 
     @BeforeEach
     void setUpSchema() {
