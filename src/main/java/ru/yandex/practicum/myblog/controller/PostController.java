@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.myblog.model.Post;
-import ru.yandex.practicum.myblog.service.PostServiceImpl;
+import ru.yandex.practicum.myblog.service.PostService;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,9 +32,9 @@ public class PostController {
     @Value("${upload.path}")
     private String uploadPath;
 
-    private final PostServiceImpl postService;
+    private final PostService postService;
 
-    public PostController(PostServiceImpl postService) {
+    public PostController(PostService postService) {
         this.postService = postService;
     }
 

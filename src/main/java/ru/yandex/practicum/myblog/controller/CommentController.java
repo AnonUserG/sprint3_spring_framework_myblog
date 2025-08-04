@@ -3,15 +3,15 @@ package ru.yandex.practicum.myblog.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.myblog.service.CommentServiceImpl;
+import ru.yandex.practicum.myblog.service.CommentService;
 
 @Controller
 @RequestMapping("/posts/{postId}/comments")
 public class CommentController {
 
-    private final CommentServiceImpl commentService;
+    private final CommentService commentService;
 
-    public CommentController(CommentServiceImpl commentService) {
+    public CommentController(CommentService commentService) {
         this.commentService = commentService;
     }
 
