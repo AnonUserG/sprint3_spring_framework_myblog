@@ -98,7 +98,7 @@
     </dependencies>
 
     <build>
-        <finalName>myblog</finalName>
+        <finalName>myblog_war_exploded</finalName>
         <pluginManagement>
             <plugins>
                 <plugin>
