@@ -28,7 +28,6 @@ public class TagRepositoryTest {
     @Autowired
     private NamedParameterJdbcTemplate jdbcTemplate;
 
-
     @BeforeEach
     void setUpSchema() {
         jdbcTemplate.getJdbcTemplate().execute("""
