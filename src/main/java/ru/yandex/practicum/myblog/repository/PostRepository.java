@@ -81,7 +81,6 @@ public class PostRepository {
         }
     }
 
-
     public void update(Post post) {
         String sql = """
             UPDATE posts
@@ -108,6 +107,5 @@ public class PostRepository {
                 "UPDATE posts SET likes_count = GREATEST(likes_count - 1, 0) WHERE id = :id";
         jdbcTemplate.update(sql, Map.of("id", postId));
     }
-
 
 }
