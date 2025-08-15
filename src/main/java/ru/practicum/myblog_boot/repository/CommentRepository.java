@@ -1,0 +1,60 @@
+package ru.practicum.myblog_boot.repository;
+
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.stereotype.Repository;
+import ru.practicum.myblog_boot.model.Comment;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+@Repository
+public class CommentRepository {
+
+    private final NamedParameterJdbcTemplate jdbcTemplate;
+
+    public CommentRepository(NamedParameterJdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
+    private RowMapper<Comment> commentRowMapper = (rs, rowNum) -> {
+        Comment comment = new Comment();
+        comment.setId(rs.getLong("id"));
+        comment.setPostId(rs.getLong("post_id"));
+        comment.setText(rs.getString("text"));
+        return comment;
+    };
+
+    public void save(Comment comment) {
+        String sql = "INSERT INTO comments (post_id, text) VALUES (:postId, :text)";
+        jdbcTemplate.update(sql, Map.of(
+                "postId", comment.getPostId(),
+                "text", comment.getText()
+        ));
+    }
+
+    public void update(Comment comment) {
+        String sql = "UPDATE comments SET text = :text WHERE id = :id";
+        jdbcTemplate.update(sql, Map.of(
+                "id", comment.getId(),
+                "text", comment.getText()
+        ));
+    }
+
+    public void deleteById(Long id) {
+        String sql = "DELETE FROM comments WHERE id = :id";
+        jdbcTemplate.update(sql, Map.of("id", id));
+    }
+
+    public List<Comment> findAllByPostId(Long postId) {
+        String sql = "SELECT * FROM comments WHERE post_id = :postId ORDER BY id ASC";
+        return jdbcTemplate.query(sql, Map.of("postId", postId), commentRowMapper);
+    }
+
+    public Optional<Comment> findById(Long id) {
+        String sql = "SELECT * FROM comments WHERE id = :id";
+        List<Comment> result = jdbcTemplate.query(sql, Map.of("id", id), commentRowMapper);
+        return result.stream().findFirst();
+    }
+}

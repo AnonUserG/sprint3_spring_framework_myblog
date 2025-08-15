@@ -1,0 +1,34 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:usersdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password:
+
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+
+  sql:
+    init:
+      mode: always
+
+upload:
+  path: "C:\\Users\\Admin\\IdeaProjects\\myblog\\uploads"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: always
+      show-components: always
+
+info:
+  app:
+    name: My Blog
+    version: 1.0.0
